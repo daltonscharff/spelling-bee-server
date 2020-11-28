@@ -17,3 +17,6 @@
 # Configuration file
 config.yaml
 config.yml
+
+# VS Code settings
+.vscode/
