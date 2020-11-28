@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  app:
+    image: golang:alpine
+    command: sh -c "go run /go/src/main.go"
+    ports:
+      - 3000:3000
+    working_dir: /go/src
+    volumes:
+      - ./:/go/src
+    environment: 
+      ENV: development
+  
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - spelling-bee-data:/var/lib/postgresql/data
+    environment: 
+      POSTGRES_PASSWORD: secret
+  
+volumes:
+  spelling-bee-data:
