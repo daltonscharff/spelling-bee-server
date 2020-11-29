@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: golang:alpine
+    image: spelling-bee-server
     command: sh -c "go run /go/src/main.go"
     ports:
       - 3000:3000
@@ -14,6 +14,8 @@ services:
   
   postgres:
     image: postgres:alpine
+    ports: 
+      - 5432:5432
     volumes:
       - spelling-bee-data:/var/lib/postgresql/data
     environment: 
