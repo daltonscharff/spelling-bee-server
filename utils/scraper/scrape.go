@@ -12,7 +12,7 @@ import (
 
 const sourceURL = "https://nytbee.com"
 
-func findDate(doc *goquery.Document) string {
+func findDate(doc *goquery.Document) *string {
 	const dateLayout = "Monday, January 2, 2006"
 
 	text := doc.Find("#date-and-pic h2").First().Text()
@@ -22,10 +22,11 @@ func findDate(doc *goquery.Document) string {
 		panic(err)
 	}
 
-	return dt.Format("2006-01-02")
+	date := dt.Format("2006-01-02")
+	return &date
 }
 
-func findWordList(doc *goquery.Document) []string {
+func findWordList(doc *goquery.Document) *[]string {
 	words := []string{}
 
 	doc.Find("#main-answer-list .column-list li").Each(func(i int, s *goquery.Selection) {
@@ -34,10 +35,10 @@ func findWordList(doc *goquery.Document) []string {
 		words = append(words, word)
 	})
 
-	return words
+	return &words
 }
 
-func createLetterMap(words []string) map[rune]int {
+func createLetterMap(words []string) *map[rune]int {
 	letterMap := map[rune]int{}
 	allLetters := strings.Join(words, "")
 
@@ -45,20 +46,20 @@ func createLetterMap(words []string) map[rune]int {
 		letterMap[char]++
 	}
 
-	return letterMap
+	return &letterMap
 }
 
-func getLetters(letterMap map[rune]int) []rune {
+func getLetters(letterMap *map[rune]int) *[]rune {
 	letters := []rune{}
 
-	for key := range letterMap {
+	for key := range *letterMap {
 		letters = append(letters, key)
 	}
 
-	return letters
+	return &letters
 }
 
-func getCenterLetter(letterMap map[rune]int) rune {
+func getCenterLetter(letterMap *map[rune]int) rune {
 	isVowel := func(letter rune) bool {
 		vowels := "aAeEiIoOuU"
 		return strings.ContainsRune(vowels, letter)
@@ -68,7 +69,7 @@ func getCenterLetter(letterMap map[rune]int) rune {
 		amount    int
 	}{0, -1}
 
-	for k, v := range letterMap {
+	for k, v := range *letterMap {
 		if v > max.amount || (v == max.amount && !isVowel(k)) {
 			max.character = k
 			max.amount = v
@@ -85,7 +86,7 @@ type GameData struct {
 	CenterLetter string   `json:"centerLetter"`
 }
 
-func Scrape() GameData {
+func Scrape() *GameData {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)
@@ -97,18 +98,18 @@ func Scrape() GameData {
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
 	data := GameData{}
-	data.Date = findDate(doc)
-	data.Words = findWordList(doc)
+	data.Date = *findDate(doc)
+	data.Words = *findWordList(doc)
 
-	letterMap := createLetterMap(data.Words)
-	data.Letters = strings.Split(string(getLetters(letterMap)), "")
-	data.CenterLetter = string(getCenterLetter(letterMap))
+	letterMap := *createLetterMap(data.Words)
+	data.Letters = strings.Split(string(*getLetters(&letterMap)), "")
+	data.CenterLetter = string(getCenterLetter(&letterMap))
 
-	return data
+	return &data
 }
 
 func main() {
-	data := Scrape()
+	data := *Scrape()
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {
