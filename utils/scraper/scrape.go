@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -86,6 +85,16 @@ type GameData struct {
 	CenterLetter string   `json:"centerLetter"`
 }
 
+func (g *GameData) JSON() string {
+	data, err := json.Marshal(g)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
+}
+
 func Scrape() *GameData {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
@@ -106,15 +115,4 @@ func Scrape() *GameData {
 	data.CenterLetter = string(getCenterLetter(&letterMap))
 
 	return &data
-}
-
-func main() {
-	data := *Scrape()
-
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(jsonData))
 }
