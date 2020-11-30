@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
@@ -79,23 +78,6 @@ func getCenterLetter(letterMap *map[rune]int) rune {
 	return max.character
 }
 
-type GameData struct {
-	Date         string   `json:"gameDate"`
-	Words        []string `json:"words"`
-	Letters      []string `json:"letters"`
-	CenterLetter string   `json:"centerLetter"`
-}
-
-func (g *GameData) JSON() string {
-	data, err := json.Marshal(g)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return string(data)
-}
-
 func Scrape() *GameData {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
@@ -107,9 +89,10 @@ func Scrape() *GameData {
 
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
-	data := GameData{}
-	data.Date = *findDate(doc)
-	data.Words = *findWordList(doc)
+	data := GameData{
+		Date:  *findDate(doc),
+		Words: *findWordList(doc),
+	}
 
 	letterMap := *createLetterMap(data.Words)
 	data.Letters = strings.Split(string(*getLetters(&letterMap)), "")
