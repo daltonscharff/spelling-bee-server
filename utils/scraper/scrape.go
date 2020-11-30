@@ -10,7 +10,7 @@ import (
 
 const sourceURL = "https://nytbee.com"
 
-func findDate(doc *goquery.Document) *string {
+func findDate(doc *goquery.Document) string {
 	const inputLayout = "Monday, January 2, 2006"
 	const outputLayout = "2006-01-02"
 
@@ -22,10 +22,10 @@ func findDate(doc *goquery.Document) *string {
 	}
 
 	date := dt.Format(outputLayout)
-	return &date
+	return date
 }
 
-func findWordList(doc *goquery.Document) *[]string {
+func findWordList(doc *goquery.Document) []string {
 	words := []string{}
 
 	doc.Find("#main-answer-list .column-list li").Each(func(i int, s *goquery.Selection) {
@@ -34,10 +34,11 @@ func findWordList(doc *goquery.Document) *[]string {
 		words = append(words, word)
 	})
 
-	return &words
+	return words
 }
 
-func createLetterMap(words []string) *map[rune]int {
+func getLetters(words []string) []rune {
+	letters := []rune{}
 	letterMap := map[rune]int{}
 	allLetters := strings.Join(words, "")
 
@@ -45,37 +46,36 @@ func createLetterMap(words []string) *map[rune]int {
 		letterMap[char]++
 	}
 
-	return &letterMap
-}
-
-func getLetters(letterMap *map[rune]int) *[]rune {
-	letters := []rune{}
-
-	for key := range *letterMap {
+	for key := range letterMap {
 		letters = append(letters, key)
 	}
 
-	return &letters
+	return letters
 }
 
-func getCenterLetter(letterMap *map[rune]int) rune {
+func getCenterLetter(words []string, letters []rune) rune {
 	isVowel := func(letter rune) bool {
 		vowels := "aAeEiIoOuU"
 		return strings.ContainsRune(vowels, letter)
 	}
-	max := struct {
-		character rune
-		amount    int
-	}{0, -1}
+	letterMap := map[rune]int{}
+	var centerLetter rune
 
-	for k, v := range *letterMap {
-		if v > max.amount || (v == max.amount && !isVowel(k)) {
-			max.character = k
-			max.amount = v
+	for _, word := range words {
+		for _, letter := range letters {
+			if strings.ContainsRune(word, letter) {
+				letterMap[letter]++
+			}
 		}
 	}
 
-	return max.character
+	for k, v := range letterMap {
+		if v == len(words) && (centerLetter == 0 || isVowel(centerLetter)) {
+			centerLetter = k
+		}
+	}
+
+	return centerLetter
 }
 
 func Scrape() *GameData {
@@ -90,13 +90,13 @@ func Scrape() *GameData {
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
 	data := GameData{
-		Date:  *findDate(doc),
-		Words: *findWordList(doc),
+		Date:  findDate(doc),
+		Words: findWordList(doc),
 	}
 
-	letterMap := *createLetterMap(data.Words)
-	data.Letters = strings.Split(string(*getLetters(&letterMap)), "")
-	data.CenterLetter = string(getCenterLetter(&letterMap))
+	letters := getLetters(data.Words)
+	data.Letters = strings.Split(string(letters), "")
+	data.CenterLetter = string(getCenterLetter(data.Words, letters))
 
 	return &data
 }
