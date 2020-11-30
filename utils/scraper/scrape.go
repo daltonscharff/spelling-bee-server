@@ -12,16 +12,17 @@ import (
 const sourceURL = "https://nytbee.com"
 
 func findDate(doc *goquery.Document) *string {
-	const dateLayout = "Monday, January 2, 2006"
+	const inputLayout = "Monday, January 2, 2006"
+	const outputLayout = "2006-01-02"
 
 	text := doc.Find("#date-and-pic h2").First().Text()
 
-	dt, err := time.Parse(dateLayout, text)
+	dt, err := time.Parse(inputLayout, text)
 	if err != nil {
 		panic(err)
 	}
 
-	date := dt.Format("2006-01-02")
+	date := dt.Format(outputLayout)
 	return &date
 }
 
