@@ -1,6 +1,7 @@
-package main
+package scraper
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
@@ -9,6 +10,21 @@ import (
 )
 
 const sourceURL = "https://nytbee.com"
+
+type GameData struct {
+	Date         string   `json:"gameDate"`
+	Words        []string `json:"words"`
+	Letters      []string `json:"letters"`
+	CenterLetter string   `json:"centerLetter"`
+}
+
+func (g *GameData) JSON() string {
+	data, err := json.Marshal(g)
+	if err != nil {
+		panic(err)
+	}
+	return string(data)
+}
 
 func findDate(doc *goquery.Document) string {
 	const inputLayout = "Monday, January 2, 2006"
