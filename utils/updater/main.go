@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/daltonscharff/spelling-bee-server/utils/scraper/scraper"
 	"github.com/daltonscharff/spelling-bee-server/utils/updater/updater"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
@@ -68,7 +69,11 @@ func main() {
 		panic(err)
 	}
 
-	if err = updater.Update(db); err != nil {
+	temp := scraper.GameData{
+		Date: "abc",
+	}
+
+	if err = updater.Update(db, temp); err != nil {
 		panic(err)
 	}
 }
