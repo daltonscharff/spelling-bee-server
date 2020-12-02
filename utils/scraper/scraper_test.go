@@ -57,6 +57,13 @@ var expectedLetters = [...]rune{
 
 const expectedCenterLetter rune = 't'
 
+var expectedGameData GameData = GameData{
+	Date:         expectedDate,
+	Words:        expectedWordList[:],
+	Letters:      strings.Split(string(expectedLetters[:]), ""),
+	CenterLetter: string(expectedCenterLetter),
+}
+
 func TestFindDate(t *testing.T) {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(validHTML))
 	if err != nil {
