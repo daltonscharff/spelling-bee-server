@@ -94,7 +94,7 @@ func getCenterLetter(words []string, letters []rune) rune {
 	return centerLetter
 }
 
-func Scrape() GameData {
+func Scrape() *GameData {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)
@@ -114,5 +114,5 @@ func Scrape() GameData {
 	data.Letters = strings.Split(string(letters), "")
 	data.CenterLetter = string(getCenterLetter(data.Words, letters))
 
-	return data
+	return &data
 }

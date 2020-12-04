@@ -1,44 +1,28 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
-	"os"
 
+	"github.com/daltonscharff/spelling-bee-server/config"
 	_ "github.com/lib/pq"
-	"github.com/spf13/viper"
 )
 
-type credentials struct {
-	host     string
-	port     int
-	user     string
-	password string
-	dbname   string
-}
-
-func (d *credentials) connectionString() string {
+func getConnectionString(c config.Config) string {
 	return fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		d.host, d.port, d.user, d.password, d.dbname)
+		c.Database.Host, c.Database.Port, c.Database.Username, c.Database.Password, c.Database.Name)
 }
 
-func ReadConfig(configFile string) (credentials, error) {
-	creds := credentials{}
-
-	if _, err := os.Stat(configFile); err != nil {
-		return creds, err
+func Connect(config config.Config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", getConnectionString(config))
+	if err != nil {
+		return nil, err
 	}
 
-	viper.SetConfigFile(configFile)
-	if err := viper.ReadInConfig(); err != nil {
-		return creds, err
+	if err = db.Ping(); err != nil {
+		return nil, err
 	}
 
-	creds.host = viper.GetString("database.host")
-	creds.port = viper.GetInt("database.port")
-	creds.user = viper.GetString("database.user")
-	creds.password = viper.GetString("database.password")
-	creds.dbname = viper.GetString("database.dbname")
-
-	return creds, nil
+	return db, nil
 }
