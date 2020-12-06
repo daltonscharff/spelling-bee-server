@@ -44,16 +44,16 @@ var expectedGameData GameData = GameData{
 		"tool",
 		"toot",
 	},
-	Letters: []string{
-		"b",
-		"i",
-		"l",
-		"m",
-		"o",
-		"t",
-		"y",
+	Letters: []byte{
+		'b',
+		'i',
+		'l',
+		'm',
+		'o',
+		't',
+		'y',
 	},
-	CenterLetter: "t",
+	CenterLetter: 't',
 }
 
 func TestFindDate(t *testing.T) {
@@ -90,15 +90,15 @@ func TestGetLetters(t *testing.T) {
 
 	for i, letter := range letters {
 		if letter != letters[i] {
-			t.Errorf("Expected %U, got %U", []rune(strings.Join(expectedGameData.Letters, "")), letters)
+			t.Errorf("Expected %U, got %U", expectedGameData.Letters, letters)
 		}
 	}
 }
 
 func TestGetCenterLetter(t *testing.T) {
-	centerLetter := getCenterLetter(expectedGameData.Words, []rune(strings.Join(expectedGameData.Letters, "")))
+	centerLetter := getCenterLetter(expectedGameData.Words, expectedGameData.Letters)
 
-	expectedCenterLetter := []rune(expectedGameData.CenterLetter)[0]
+	expectedCenterLetter := expectedGameData.CenterLetter
 
 	if centerLetter != expectedCenterLetter {
 		t.Errorf("Expected %U, got %U", expectedCenterLetter, centerLetter)

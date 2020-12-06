@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -14,8 +15,8 @@ const sourceURL = "https://nytbee.com"
 type GameData struct {
 	Date         string   `json:"gameDate"`
 	Words        []string `json:"words"`
-	Letters      []string `json:"letters"`
-	CenterLetter string   `json:"centerLetter"`
+	Letters      []byte   `json:"letters"`
+	CenterLetter byte     `json:"centerLetter"`
 }
 
 func (g *GameData) JSON() string {
@@ -53,33 +54,30 @@ func findWordList(doc *goquery.Document) []string {
 	return words
 }
 
-func getLetters(words []string) []rune {
-	letters := []rune{}
-	letterMap := map[rune]int{}
-	allLetters := strings.Join(words, "")
+func getLetters(words []string) []byte {
+	letters := []byte{}
+	allLetters := []byte(strings.Join(words, ""))
 
-	for _, char := range allLetters {
-		letterMap[char]++
-	}
-
-	for key := range letterMap {
-		letters = append(letters, key)
+	for i := 0; i < len(allLetters); i++ {
+		if bytes.Contains(letters, []byte{allLetters[i]}) == false {
+			letters = append(letters, allLetters[i])
+		}
 	}
 
 	return letters
 }
 
-func getCenterLetter(words []string, letters []rune) rune {
-	isVowel := func(letter rune) bool {
-		vowels := "aAeEiIoOuU"
-		return strings.ContainsRune(vowels, letter)
+func getCenterLetter(words []string, letters []byte) byte {
+	isVowel := func(letter byte) bool {
+		vowels := []byte("aAeEiIoOuU")
+		return bytes.Contains(vowels, []byte{letter})
 	}
-	letterMap := map[rune]int{}
-	var centerLetter rune
+	letterMap := map[byte]int{}
+	var centerLetter byte
 
 	for _, word := range words {
 		for _, letter := range letters {
-			if strings.ContainsRune(word, letter) {
+			if bytes.Contains([]byte(word), []byte{letter}) {
 				letterMap[letter]++
 			}
 		}
@@ -94,7 +92,7 @@ func getCenterLetter(words []string, letters []rune) rune {
 	return centerLetter
 }
 
-func Scrape() *GameData {
+func Scrape() GameData {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)
@@ -110,9 +108,8 @@ func Scrape() *GameData {
 		Words: findWordList(doc),
 	}
 
-	letters := getLetters(data.Words)
-	data.Letters = strings.Split(string(letters), "")
-	data.CenterLetter = string(getCenterLetter(data.Words, letters))
+	data.Letters = getLetters(data.Words)
+	data.CenterLetter = getCenterLetter(data.Words, data.Letters)
 
-	return &data
+	return data
 }
