@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/daltonscharff/spelling-bee-server/db"
 )
 
 const sourceURL = "https://nytbee.com"
@@ -77,7 +76,7 @@ func getCenterLetter(words []string, letters []byte) byte {
 	return centerLetter
 }
 
-func Scrape() (db.Puzzle, []db.Word) {
+func Scrape() (date string, letters []byte, centerLetter byte, words []string) {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)
@@ -88,20 +87,10 @@ func Scrape() (db.Puzzle, []db.Word) {
 
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
-	puzzle := db.Puzzle{}
-	words := []db.Word{}
+	words = findWordList(doc)
+	date = findDate(doc)
+	letters = getLetters(words)
+	centerLetter = getCenterLetter(words, letters)
 
-	wordList := findWordList(doc)
-
-	for _, word := range wordList {
-		words = append(words, db.Word{
-			Word: word,
-		})
-	}
-
-	puzzle.Date = findDate(doc)
-	puzzle.Letters = getLetters(wordList)
-	puzzle.Center = getCenterLetter(wordList, puzzle.Letters)
-
-	return puzzle, words
+	return date, letters, centerLetter, words
 }
