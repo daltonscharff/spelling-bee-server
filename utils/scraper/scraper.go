@@ -2,30 +2,15 @@ package scraper
 
 import (
 	"bytes"
-	"encoding/json"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/daltonscharff/spelling-bee-server/db"
 )
 
 const sourceURL = "https://nytbee.com"
-
-type GameData struct {
-	Date         string   `json:"gameDate"`
-	Words        []string `json:"words"`
-	Letters      []byte   `json:"letters"`
-	CenterLetter byte     `json:"centerLetter"`
-}
-
-func (g *GameData) JSON() string {
-	data, err := json.Marshal(g)
-	if err != nil {
-		panic(err)
-	}
-	return string(data)
-}
 
 func findDate(doc *goquery.Document) string {
 	const inputLayout = "Monday, January 2, 2006"
@@ -92,7 +77,7 @@ func getCenterLetter(words []string, letters []byte) byte {
 	return centerLetter
 }
 
-func Scrape() GameData {
+func Scrape() (db.Puzzle, []db.Word) {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)
@@ -103,13 +88,20 @@ func Scrape() GameData {
 
 	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 
-	data := GameData{
-		Date:  findDate(doc),
-		Words: findWordList(doc),
+	puzzle := db.Puzzle{}
+	words := []db.Word{}
+
+	wordList := findWordList(doc)
+
+	for _, word := range wordList {
+		words = append(words, db.Word{
+			Word: word,
+		})
 	}
 
-	data.Letters = getLetters(data.Words)
-	data.CenterLetter = getCenterLetter(data.Words, data.Letters)
+	puzzle.Date = findDate(doc)
+	puzzle.Letters = getLetters(wordList)
+	puzzle.Center = getCenterLetter(wordList, puzzle.Letters)
 
-	return data
+	return puzzle, words
 }
