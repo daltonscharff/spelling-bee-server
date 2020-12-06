@@ -5,55 +5,44 @@ import (
 
 	"github.com/daltonscharff/spelling-bee-server/config"
 	"github.com/daltonscharff/spelling-bee-server/db"
-	"github.com/daltonscharff/spelling-bee-server/utils/scraper"
 	"github.com/daltonscharff/spelling-bee-server/utils/updater"
 	"github.com/gofiber/fiber/v2"
 )
 
-var gameData = &scraper.GameData{
-	Date: "2020-12-04",
-	Words: []string{
-		"ardor",
-		"award",
-		"awkward",
-		"daddy",
-		"dark",
-		"daywork",
-		"dodo",
-		"doodad",
-		"door",
-		"doorway",
-		"dooryard",
-		"dork",
-		"dorky",
-		"dory",
-		"dowdy",
-		"dowry",
-		"draw",
-		"dray",
-		"dryad",
-		"dyad",
-		"odor",
-		"radar",
-		"road",
-		"roadway",
-		"roadwork",
-		"rood",
-		"rowdy",
-		"ward",
-		"wayward",
-		"wood",
-		"woodwork",
-		"woody",
-		"word",
-		"wordy",
-		"workaday",
-		"workday",
-		"yard",
-		"yardwork",
-	},
-	Letters:      []string{"a", "r", "d", "o", "w", "k", "y"},
-	CenterLetter: "d",
+var date string = "2020-12-01"
+var letters []byte = []byte{'b', 'i', 'l', 'm', 'o', 't', 'y'}
+var center byte = 't'
+var words []string = []string{
+	"blot",
+	"blotto",
+	"bolt",
+	"boot",
+	"booty",
+	"bottom",
+	"immobility",
+	"itty",
+	"lilt",
+	"limit",
+	"lobotomy",
+	"loot",
+	"lotto",
+	"mitt",
+	"mobility",
+	"molt",
+	"moot",
+	"motility",
+	"motto",
+	"obit",
+	"omit",
+	"till",
+	"tilt",
+	"toil",
+	"toll",
+	"tomb",
+	"tomboy",
+	"tomtit",
+	"tool",
+	"toot",
 }
 
 func helloWorld(c *fiber.Ctx) error {
@@ -79,8 +68,8 @@ func main() {
 	}
 	defer db.Close()
 
-	// gameData := scraper.Scrape()
+	// date, letters, centerLetter, words := scraper.Scrape()
 
-	updater.Update(db, gameData)
+	updater.Update(db, date, letters, center, words)
 
 }
