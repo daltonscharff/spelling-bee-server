@@ -1,7 +1,6 @@
-package scraper
+package newGame
 
 import (
-	"bytes"
 	"net/http"
 	"strings"
 	"time"
@@ -38,37 +37,37 @@ func findWordList(doc *goquery.Document) []string {
 	return words
 }
 
-func getLetters(words []string) []byte {
+func getLetters(words []string) []string {
 	letters := []byte{}
-	allLetters := []byte(strings.Join(words, ""))
+	allLetters := strings.Join(words, "")
 
-	for i := 0; i < len(allLetters); i++ {
-		if bytes.Contains(letters, []byte{allLetters[i]}) == false {
-			letters = append(letters, allLetters[i])
+	for _, letter := range allLetters {
+		if strings.ContainsRune(string(letters), letter) == false {
+			letters = append(letters, byte(letter))
 		}
 	}
 
-	return letters
+	return strings.Split(string(letters[:]), "")
 }
 
-func getCenterLetter(words []string, letters []byte) byte {
-	isVowel := func(letter byte) bool {
-		vowels := []byte("aAeEiIoOuU")
-		return bytes.Contains(vowels, []byte{letter})
+func getCenterLetter(words []string, letters []string) string {
+	isVowel := func(letter string) bool {
+		vowels := "aAeEiIoOuU"
+		return strings.Contains(vowels, letter)
 	}
-	letterMap := map[byte]int{}
-	var centerLetter byte
+	letterMap := map[string]int{}
+	var centerLetter string
 
 	for _, word := range words {
 		for _, letter := range letters {
-			if bytes.Contains([]byte(word), []byte{letter}) {
+			if strings.Contains(word, letter) {
 				letterMap[letter]++
 			}
 		}
 	}
 
 	for k, v := range letterMap {
-		if v == len(words) && (centerLetter == 0 || isVowel(centerLetter)) {
+		if v == len(words) && (centerLetter == "" || isVowel(centerLetter)) {
 			centerLetter = k
 		}
 	}
@@ -76,7 +75,7 @@ func getCenterLetter(words []string, letters []byte) byte {
 	return centerLetter
 }
 
-func Scrape() (date string, letters []byte, centerLetter byte, words []string) {
+func Scrape() (date string, letters []string, centerLetter string, words []string) {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)

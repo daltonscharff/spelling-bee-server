@@ -21,23 +21,23 @@ func (c *Config) parse(data []byte) error {
 	return yaml.Unmarshal(data, c)
 }
 
-func Read(configFile string) (*Config, error) {
+func Read(configFile string) (Config, error) {
 	config := Config{}
 
 	if len(configFile) > 0 {
 		if _, err := os.Stat(configFile); err != nil {
-			return nil, err
+			return config, err
 		}
 
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			return nil, err
+			return config, err
 		}
 
 		if err := config.parse(data); err != nil {
-			return nil, err
+			return config, err
 		}
 	}
 
-	return &config, nil
+	return config, nil
 }
