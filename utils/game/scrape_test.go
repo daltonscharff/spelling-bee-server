@@ -1,4 +1,4 @@
-package newGame
+package game
 
 import (
 	"sort"

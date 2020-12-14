@@ -1,4 +1,4 @@
-package newGame
+package game
 
 import (
 	"net/http"
@@ -75,7 +75,7 @@ func getCenterLetter(words []string, letters []string) string {
 	return centerLetter
 }
 
-func Scrape() (date string, letters []string, centerLetter string, words []string) {
+func scrape() (date string, letters []string, centerLetter string, words []string) {
 	resp, err := http.Get(sourceURL)
 	if err != nil {
 		panic(err)

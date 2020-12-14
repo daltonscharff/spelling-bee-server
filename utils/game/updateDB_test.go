@@ -1,4 +1,4 @@
-package newGame
+package game
 
 import (
 	"testing"
@@ -54,5 +54,5 @@ func TestUpdate(t *testing.T) {
 	}
 	defer db.Close()
 
-	Update(db, date, letters, center, words)
+	update(db, date, letters, center, words)
 }
