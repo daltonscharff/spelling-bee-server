@@ -15,6 +15,10 @@ type Config struct {
 		Password string `yaml:"password"`
 		Name     string `yaml:"dbName"`
 	} `yaml:"database"`
+	RapidAPI struct {
+		Host string `yaml:"host"`
+		Key  string `yaml:"key"`
+	} `yaml:"rapidApi"`
 }
 
 func (c *Config) parse(data []byte) error {

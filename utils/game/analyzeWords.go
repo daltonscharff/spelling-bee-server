@@ -1,18 +1,29 @@
 package game
 
+import (
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+)
+
 type analyzedWord struct {
-	Definition   string `json:"definition"`
-	PartOfSpeech string `json:"part_of_speech"`
-	PointValue   int    `json:"point_value"`
+	PointValue  int          `json="pointValue"`
+	Definitions []definition `json="definitions"`
 }
 
-func analyzeWords(words []string) (wordMap map[string]analyzedWord, err error) {
+type definition struct {
+	Definition   string `json="definition"`
+	PartOfSpeech string `json="partOfSpeech"`
+}
+
+func analyzeWords(words []string, APIHost string, APIKey string) (wordMap map[string]analyzedWord) {
 	for _, word := range words {
 		wordMap[word] = analyzedWord{
-			PointValue: calculatePointValue(word),
+			PointValue:  calculatePointValue(word),
+			Definitions: defineWord(word, APIHost, APIKey),
 		}
 	}
-	return wordMap, nil
+	return wordMap
 }
 
 func calculatePointValue(word string) (points int) {
@@ -33,4 +44,29 @@ func calculatePointValue(word string) (points int) {
 	}
 
 	return points
+}
+
+func defineWord(word string, APIHost string, APIKey string) []definition {
+	req, _ := http.NewRequest("GET", "https://wordsapiv1.p.rapidapi.com/words/"+word+"/definitions", nil)
+
+	req.Header.Add("x-rapidapi-key", APIKey)
+	req.Header.Add("x-rapidapi-host", APIHost)
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer res.Body.Close()
+
+	body, _ := ioutil.ReadAll(res.Body)
+
+	resObj := struct {
+		Definitions []definition `json:"definitions"`
+	}{}
+
+	if err = json.Unmarshal(body, &resObj); err != nil {
+		panic(err)
+	}
+
+	return resObj.Definitions
 }
