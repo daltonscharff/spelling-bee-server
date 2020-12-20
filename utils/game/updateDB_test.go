@@ -3,9 +3,9 @@ package game
 import (
 	"testing"
 
-	"github.com/daltonscharff/spelling-bee-server/config"
 	"github.com/daltonscharff/spelling-bee-server/db"
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 )
 
 var date string = "2020-12-01"
@@ -27,21 +27,21 @@ var wordMap map[string]analyzedWord = map[string]analyzedWord{
 	},
 }
 
-func beforeEach() (config.Config, *sqlx.DB) {
-	conf, err := config.Read("../../config.yaml")
-	if err != nil {
+func beforeEach() *sqlx.DB {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
-	db, err := db.Connect(conf)
+
+	db, err := db.Connect()
 	if err != nil {
 		panic(err)
 	}
 
-	return conf, db
+	return db
 }
 
 // func TestClearTables(t *testing.T) {
-// 	_, db := beforeEach()
+// 	db := beforeEach()
 // 	defer db.Close()
 
 // 	db.MustExec("INSERT INTO puzzles VALUES ($1, $2, $3, $4, $5);", 999, "01-02-2020", pq.Array([]string{"a", "b", "c"}), "a", 100)
@@ -51,7 +51,7 @@ func beforeEach() (config.Config, *sqlx.DB) {
 // }
 
 func TestUpdateDB(t *testing.T) {
-	_, db := beforeEach()
+	db := beforeEach()
 	defer db.Close()
 
 	_, err := updateDB(db, date, letters, center, wordMap)

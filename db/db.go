@@ -2,20 +2,18 @@ package db
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/daltonscharff/spelling-bee-server/config"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-func getConnectionString(c config.Config) string {
-	return fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		c.Database.Host, c.Database.Port, c.Database.Username, c.Database.Password, c.Database.Name)
+func getConnectionString() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 }
 
-func Connect(config config.Config) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("postgres", getConnectionString(config))
+func Connect() (*sqlx.DB, error) {
+	db, err := sqlx.Connect("postgres", getConnectionString())
 	if err != nil {
 		return nil, err
 	}

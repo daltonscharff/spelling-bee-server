@@ -14,9 +14,10 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# Configuration file
+# Configuration and environment files
 config.yaml
 config.yml
+*.env
 
 # VS Code settings
 .vscode/

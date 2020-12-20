@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 type analyzedWord struct {
@@ -42,11 +43,11 @@ func calcPointValue(word string) (points int) {
 	return points
 }
 
-func defineWord(word string, APIHost string, APIKey string) []definition {
+func defineWord(word string) []definition {
 	req, _ := http.NewRequest("GET", "https://wordsapiv1.p.rapidapi.com/words/"+word+"/definitions", nil)
 
-	req.Header.Add("x-rapidapi-key", APIKey)
-	req.Header.Add("x-rapidapi-host", APIHost)
+	req.Header.Add("x-rapidapi-key", os.Getenv("RAPID_API_KEY"))
+	req.Header.Add("x-rapidapi-host", os.Getenv("RAPID_API_HOST"))
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -67,12 +68,12 @@ func defineWord(word string, APIHost string, APIKey string) []definition {
 	return resObj.Definitions
 }
 
-func analyzeWords(words []string, APIHost string, APIKey string) map[string]analyzedWord {
+func analyzeWords(words []string) map[string]analyzedWord {
 	wordMap := map[string]analyzedWord{}
 	for _, word := range words {
 		wordMap[word] = analyzedWord{
 			PointValue:  calcPointValue(word),
-			Definitions: defineWord(word, APIHost, APIKey),
+			Definitions: defineWord(word),
 		}
 	}
 	return wordMap

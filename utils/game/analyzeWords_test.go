@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/daltonscharff/spelling-bee-server/config"
+	"github.com/joho/godotenv"
 )
 
 func TestCalcPointValue(t *testing.T) {
@@ -19,8 +19,7 @@ func TestCalcPointValue(t *testing.T) {
 }
 
 func TestDefineWord(t *testing.T) {
-	conf, err := config.Read("../../config.yaml")
-	if err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
 
@@ -37,7 +36,7 @@ func TestDefineWord(t *testing.T) {
 		},
 	}
 
-	definitions := defineWord(word, conf.RapidAPI.Host, conf.RapidAPI.Key)
+	definitions := defineWord(word)
 
 	if !reflect.DeepEqual(expected, definitions) {
 		t.Errorf("Expected %+v, got %+v", expected, definitions)
@@ -45,8 +44,7 @@ func TestDefineWord(t *testing.T) {
 }
 
 func TestAnalyzeWords(t *testing.T) {
-	conf, err := config.Read("../../config.yaml")
-	if err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
 
@@ -66,7 +64,7 @@ func TestAnalyzeWords(t *testing.T) {
 		},
 	}
 
-	wordMap := analyzeWords([]string{"immobility"}, conf.RapidAPI.Host, conf.RapidAPI.Key)
+	wordMap := analyzeWords([]string{"immobility"})
 
 	if !reflect.DeepEqual(expected, wordMap) {
 		t.Errorf("Expected %+v, got %+v", expected, wordMap)
