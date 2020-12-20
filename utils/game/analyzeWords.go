@@ -17,7 +17,13 @@ type definition struct {
 }
 
 func calcPointValue(word string) (points int) {
-	points = len(word) - 3
+	if len(word) < 4 {
+		points = 0
+	} else if len(word) == 4 {
+		points = 1
+	} else {
+		points = len(word)
+	}
 
 	if len(word) >= 7 {
 		letterMap := map[rune]bool{}

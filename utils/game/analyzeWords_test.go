@@ -10,7 +10,7 @@ import (
 func TestCalcPointValue(t *testing.T) {
 	word := "immobility"
 
-	expectedPoints := 14
+	expectedPoints := 17
 	points := calcPointValue(word)
 
 	if points != expectedPoints {
@@ -52,7 +52,7 @@ func TestAnalyzeWords(t *testing.T) {
 
 	expected := map[string]analyzedWord{
 		"immobility": {
-			PointValue: 14,
+			PointValue: 17,
 			Definitions: []definition{
 				{
 					Definition:   "remaining in place",
