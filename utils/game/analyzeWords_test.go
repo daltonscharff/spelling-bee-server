@@ -7,11 +7,11 @@ import (
 	"github.com/daltonscharff/spelling-bee-server/config"
 )
 
-func TestCalculatePointValue(t *testing.T) {
+func TestCalcPointValue(t *testing.T) {
 	word := "immobility"
 
 	expectedPoints := 14
-	points := calculatePointValue(word)
+	points := calcPointValue(word)
 
 	if points != expectedPoints {
 		t.Errorf("Expected %v, got %v", expectedPoints, points)
@@ -41,5 +41,34 @@ func TestDefineWord(t *testing.T) {
 
 	if !reflect.DeepEqual(expected, definitions) {
 		t.Errorf("Expected %+v, got %+v", expected, definitions)
+	}
+}
+
+func TestAnalyzeWords(t *testing.T) {
+	conf, err := config.Read("../../config.yaml")
+	if err != nil {
+		panic(err)
+	}
+
+	expected := map[string]analyzedWord{
+		"immobility": {
+			PointValue: 14,
+			Definitions: []definition{
+				{
+					Definition:   "remaining in place",
+					PartOfSpeech: "noun",
+				},
+				{
+					Definition:   "the quality of not moving",
+					PartOfSpeech: "noun",
+				},
+			},
+		},
+	}
+
+	wordMap := analyzeWords([]string{"immobility"}, conf.RapidAPI.Host, conf.RapidAPI.Key)
+
+	if !reflect.DeepEqual(expected, wordMap) {
+		t.Errorf("Expected %+v, got %+v", expected, wordMap)
 	}
 }

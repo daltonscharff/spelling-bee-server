@@ -9,15 +9,17 @@ type Find struct {
 }
 
 type Puzzle struct {
-	ID      int      `json:"id,omitempty"`
-	Date    string   `json:"date"`
-	Letters []string `json:"letters"`
-	Center  string   `json:"center"`
+	ID       int      `json:"id,omitempty"`
+	Date     string   `json:"date"`
+	Letters  []string `json:"letters"`
+	Center   string   `json:"center"`
+	MaxScore int      `json:"max_score"`
 }
 
 type Room struct {
-	ID   int    `json:"id,omitempty"`
-	Code string `json:"code"`
+	ID    int    `json:"id,omitempty"`
+	Code  string `json:"code"`
+	Score int    `json:"score"`
 }
 
 type Word struct {

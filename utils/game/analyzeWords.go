@@ -16,17 +16,7 @@ type definition struct {
 	PartOfSpeech string `json="partOfSpeech"`
 }
 
-func analyzeWords(words []string, APIHost string, APIKey string) (wordMap map[string]analyzedWord) {
-	for _, word := range words {
-		wordMap[word] = analyzedWord{
-			PointValue:  calculatePointValue(word),
-			Definitions: defineWord(word, APIHost, APIKey),
-		}
-	}
-	return wordMap
-}
-
-func calculatePointValue(word string) (points int) {
+func calcPointValue(word string) (points int) {
 	points = len(word) - 3
 
 	if len(word) >= 7 {
@@ -69,4 +59,15 @@ func defineWord(word string, APIHost string, APIKey string) []definition {
 	}
 
 	return resObj.Definitions
+}
+
+func analyzeWords(words []string, APIHost string, APIKey string) map[string]analyzedWord {
+	wordMap := map[string]analyzedWord{}
+	for _, word := range words {
+		wordMap[word] = analyzedWord{
+			PointValue:  calcPointValue(word),
+			Definitions: defineWord(word, APIHost, APIKey),
+		}
+	}
+	return wordMap
 }

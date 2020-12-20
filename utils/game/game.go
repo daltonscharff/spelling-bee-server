@@ -5,8 +5,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func Refresh(db *sqlx.DB, conf config.Config) {
+func Refresh(db *sqlx.DB, conf config.Config) error {
 	date, letters, centerLetter, words := scrape()
 	wordMap := analyzeWords(words, conf.RapidAPI.Host, conf.RapidAPI.Key)
-	puzzleID, err := updateDB(date, letters, centerLetter, wordMap)
+	_, err := updateDB(db, date, letters, centerLetter, wordMap)
+	if err != nil {
+		return err
+	}
+	return nil
 }
