@@ -26,11 +26,11 @@ func TestDefineWord(t *testing.T) {
 	word := "immobility"
 
 	expected := []definition{
-		definition{
+		{
 			Definition:   "remaining in place",
 			PartOfSpeech: "noun",
 		},
-		definition{
+		{
 			Definition:   "the quality of not moving",
 			PartOfSpeech: "noun",
 		},

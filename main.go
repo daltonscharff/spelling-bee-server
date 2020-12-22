@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/daltonscharff/spelling-bee-server/db"
-	"github.com/daltonscharff/spelling-bee-server/utils/game"
+	"github.com/daltonscharff/spelling-bee-server/game"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/joho/godotenv/autoload"
 )
