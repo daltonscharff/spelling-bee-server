@@ -8,13 +8,13 @@ import (
 )
 
 func clearTables(db *sqlx.DB) error {
-	if _, err := db.Exec("DELETE FROM finds;"); err != nil {
+	if _, err := db.Exec("TRUNCATE TABLE finds CASCADE;"); err != nil {
 		return err
 	}
-	if _, err := db.Exec("DELETE FROM words;"); err != nil {
+	if _, err := db.Exec("TRUNCATE TABLE words CASCADE;"); err != nil {
 		return err
 	}
-	if _, err := db.Exec("DELETE FROM puzzles;"); err != nil {
+	if _, err := db.Exec("TRUNCATE TABLE puzzles CASCADE;"); err != nil {
 		return err
 	}
 	return nil
