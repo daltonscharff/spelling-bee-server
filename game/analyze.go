@@ -43,7 +43,7 @@ func calcPointValue(word string) (points int) {
 	return points
 }
 
-func defineWord(word string) []definition {
+func defineWord(word string) (definitions []definition) {
 	req, _ := http.NewRequest("GET", "https://wordsapiv1.p.rapidapi.com/words/"+word+"/definitions", nil)
 
 	req.Header.Add("x-rapidapi-key", os.Getenv("RAPID_API_KEY"))
@@ -51,9 +51,13 @@ func defineWord(word string) []definition {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil
+		return []definition{}
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode >= 300 {
+		return []definition{}
+	}
 
 	body, _ := ioutil.ReadAll(res.Body)
 
