@@ -28,7 +28,7 @@ var wordMap map[string]analyzedWord = map[string]analyzedWord{
 }
 
 func beforeEach() *sqlx.DB {
-	if err := godotenv.Load("../../.env"); err != nil {
+	if err := godotenv.Load("../.env"); err != nil {
 		panic(err)
 	}
 
