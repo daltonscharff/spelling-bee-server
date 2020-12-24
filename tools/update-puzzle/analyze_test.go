@@ -1,4 +1,4 @@
-package game
+package main
 
 import (
 	"reflect"
@@ -19,7 +19,7 @@ func TestCalcPointValue(t *testing.T) {
 }
 
 func TestDefineWord(t *testing.T) {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
 
@@ -44,7 +44,7 @@ func TestDefineWord(t *testing.T) {
 }
 
 func TestAnalyzeWords(t *testing.T) {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
 

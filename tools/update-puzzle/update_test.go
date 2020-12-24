@@ -1,9 +1,9 @@
-package game
+package main
 
 import (
 	"testing"
 
-	"github.com/daltonscharff/spelling-bee-server/db"
+	"github.com/daltonscharff/spelling-bee-server/internal/db"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 )
@@ -28,7 +28,7 @@ var wordMap map[string]analyzedWord = map[string]analyzedWord{
 }
 
 func beforeEach() *sqlx.DB {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load("../../.env"); err != nil {
 		panic(err)
 	}
 
