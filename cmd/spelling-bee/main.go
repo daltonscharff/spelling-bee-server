@@ -1,16 +1,22 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	_ "github.com/joho/godotenv/autoload"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-func helloWorld(c *fiber.Ctx) error {
-	return c.SendString("Hello, World!")
-}
-
 func main() {
-	app := fiber.New()
-	app.Get("/", helloWorld)
-	app.Listen(":3000")
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello!")
+	})
+
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("APP_HOST"), os.Getenv("APP_PORT")), nil))
 }
