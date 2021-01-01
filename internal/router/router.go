@@ -30,7 +30,7 @@ func viewPuzzle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	for rows.Next() {
 		word := Word{}
-		rows.Scan(&word.Value, &word.PointValue)
+		rows.Scan(&word.Word, &word.PointValue)
 		response.Words = append(response.Words, word)
 	}
 

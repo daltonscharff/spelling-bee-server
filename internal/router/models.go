@@ -13,7 +13,7 @@ type Puzzle struct {
 
 type Word struct {
 	ID           uint   `json:"-"`
-	Value        string `json:"value"`
+	Word         string `json:"word"`
 	PointValue   uint   `json:"pointValue"`
 	Definition   string `json:"definition"`
 	PartOfSpeech string `json:"partOfSpeech"`
