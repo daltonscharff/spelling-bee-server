@@ -4,12 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/daltonscharff/spelling-bee-server/internal/db"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/lib/pq"
 )
+
+func requireAuth(next httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		if strings.Compare(os.Getenv("SPELLING_BEE_API_KEY"), r.Header.Get("X-SpellingBeeAPI-Key")) != 0 {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		next(w, r, ps)
+	}
+}
 
 func viewPuzzle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	db, err := db.Connect()
@@ -44,6 +56,9 @@ func New() *httprouter.Router {
 		fmt.Fprintf(w, "Pong\n")
 	})
 	router.GET("/api/puzzle", viewPuzzle)
+	router.GET("/api/testProtected", requireAuth(func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		fmt.Fprintf(w, "OK\n")
+	}))
 	// router.GET("/api/room/:code", viewRoom)
 	// router.POST("/api/room", createRoom)
 	// router.POST("/api/ws", createWebsocketConnection)
