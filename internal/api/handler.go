@@ -1,10 +1,8 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/daltonscharff/spelling-bee-server/internal/postgres"
@@ -31,27 +29,8 @@ func NewHandler(store postgres.Store) *Handler {
 		Router: httprouter.New(),
 		store:  store,
 	}
-	h.GET("/api/words", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-		ww, err := h.store.Words()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		json.NewEncoder(w).Encode(ww)
-	})
-	h.GET("/api/words/:id", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		id, err := strconv.ParseUint(p.ByName("id"), 0, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		ww, err := h.store.Word(id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		json.NewEncoder(w).Encode(ww)
-	})
+	h.GET("/api/words", viewAllWords(h))
+	h.GET("/api/words/:id", viewWord(h))
 	h.POST("/api/words", requireAuth(createWord))
 
 	// router.GET("/api/puzzle", viewPuzzle)
