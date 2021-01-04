@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS puzzles
+CREATE TABLE puzzles
 (
     id serial NOT NULL,
     date date NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS puzzles
     CONSTRAINT puzzles_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS rooms
+CREATE TABLE rooms
 (
     id serial NOT NULL,
     code character(8) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS rooms
     CONSTRAINT rooms_code_key UNIQUE (code)
 );
 
-CREATE TABLE IF NOT EXISTS words
+CREATE TABLE words
 (
     id serial NOT NULL,
     word character varying(32) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS words
         ON DELETE NO ACTION
 );
 
-CREATE TABLE IF NOT EXISTS finds
+CREATE TABLE finds
 (
     id serial NOT NULL,
     word_id integer NOT NULL,
