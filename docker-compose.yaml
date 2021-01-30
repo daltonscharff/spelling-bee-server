@@ -11,6 +11,8 @@ services:
       - ./:/go/src
     environment: 
       ENV: development
+    depends_on:
+      - "postgres"
   
   postgres:
     image: postgres:alpine
