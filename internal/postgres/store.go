@@ -8,11 +8,20 @@ import (
 )
 
 type Store struct {
-	*FindStore
-	*PuzzleStore
-	*RoomStore
-	*WordStore
+	Finds   *FindStore
+	Puzzles *PuzzleStore
+	Rooms   *RoomStore
+	Words   *WordStore
 }
+
+// type WordStoreInterface interface {
+// 	Read(id uint64) (Word{}, error)
+// 	ReadAll() ([]Word{}, error)
+// 	Create(*Word{}) error
+// 	Update(*Word{}) error
+// 	Delete(id uint64) (Word{}, error)
+// 	DeleteAll() ([]Word{}, error)
+// }
 
 func NewStore(dataSourceName string) (*Store, error) {
 	db, err := sqlx.Open("postgres", dataSourceName)
@@ -23,9 +32,9 @@ func NewStore(dataSourceName string) (*Store, error) {
 		return nil, fmt.Errorf("error connecting to database: %w", err)
 	}
 	return &Store{
-		FindStore:   &FindStore{DB: db},
-		PuzzleStore: &PuzzleStore{DB: db},
-		RoomStore:   &RoomStore{DB: db},
-		WordStore:   &WordStore{DB: db},
+		Finds:   &FindStore{DB: db},
+		Puzzles: &PuzzleStore{DB: db},
+		Rooms:   &RoomStore{DB: db},
+		Words:   &WordStore{DB: db},
 	}, nil
 }

@@ -29,9 +29,12 @@ func NewHandler(store postgres.Store) *Handler {
 		Router: httprouter.New(),
 		store:  store,
 	}
-	h.GET("/api/words", viewAllWords(h))
 	h.GET("/api/words/:id", viewWord(h))
-	h.POST("/api/words", requireAuth(createWord))
+	h.GET("/api/words", viewAllWords(h))
+	h.POST("/api/words", requireAuth(createWord(h)))
+	h.PUT("/api/words/:id", requireAuth(updateWord(h)))
+	h.DELETE("/api/words/:id", requireAuth(deleteWord(h)))
+	h.DELETE("/api/words", requireAuth(deleteAllWords(h)))
 
 	// router.GET("/api/puzzle", viewPuzzle)
 	// router.POST("/api/puzzle", requireAuth(createPuzzle))
