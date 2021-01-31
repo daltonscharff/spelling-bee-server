@@ -34,20 +34,20 @@ CREATE TABLE words
         ON DELETE NO ACTION
 );
 
-CREATE TABLE finds
+CREATE TABLE records
 (
     id serial NOT NULL,
     word_id integer NOT NULL,
     room_id integer NOT NULL,
     player_name character varying(64) NOT NULL,
     found_at timestamp with time zone NOT NULL,
-    CONSTRAINT finds_pkey PRIMARY KEY (id),
-    CONSTRAINT finds_word_id_room_id_key UNIQUE (word_id, room_id),
-    CONSTRAINT finds_room_id_fkey FOREIGN KEY (room_id)
+    CONSTRAINT records_pkey PRIMARY KEY (id),
+    CONSTRAINT records_word_id_room_id_key UNIQUE (word_id, room_id),
+    CONSTRAINT records_room_id_fkey FOREIGN KEY (room_id)
         REFERENCES rooms (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-    CONSTRAINT finds_word_id_fkey FOREIGN KEY (word_id)
+    CONSTRAINT records_word_id_fkey FOREIGN KEY (word_id)
         REFERENCES words (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION

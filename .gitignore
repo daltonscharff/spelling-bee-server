@@ -21,3 +21,6 @@ config.yml
 
 # VS Code settings
 .vscode/
+
+# tmp files created by air
+tmp/
