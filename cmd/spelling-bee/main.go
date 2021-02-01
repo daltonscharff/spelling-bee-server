@@ -8,7 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 
-	"github.com/daltonscharff/spelling-bee-server/internal/api"
+	"github.com/daltonscharff/spelling-bee-server/internal/database"
+	"github.com/daltonscharff/spelling-bee-server/internal/router"
 )
 
 func main() {
@@ -16,13 +17,12 @@ func main() {
 		panic(err)
 	}
 
-	controller, err := api.CreateController()
-	if err != nil {
+	if err := database.Connect(); err != nil {
 		log.Fatal(err)
 	}
 
 	app := fiber.New()
-	api.DefineRoutes(app, controller)
+	router.DefineRoutes(app)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")

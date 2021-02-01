@@ -1,4 +1,4 @@
-package word
+package database
 
 import (
 	"fmt"
@@ -16,28 +16,28 @@ type Word struct {
 	Synonym      string `db:"synonym" json:"synonym"`
 }
 
-type Controller struct {
+type WordTable struct {
 	*sqlx.DB
 }
 
-func (c *Controller) Read(id uint64) (Word, error) {
+func (t *WordTable) Read(id uint64) (Word, error) {
 	var w Word
-	if err := c.Get(&w, `SELECT * FROM words WHERE id = $1;`, id); err != nil {
+	if err := t.Get(&w, `SELECT * FROM words WHERE id = $1;`, id); err != nil {
 		return Word{}, fmt.Errorf("error getting word: %w", err)
 	}
 	return w, nil
 }
 
-func (c *Controller) ReadAll() ([]Word, error) {
+func (t *WordTable) ReadAll() ([]Word, error) {
 	var ww []Word
-	if err := c.Select(&ww, `SELECT * FROM words;`); err != nil {
+	if err := t.Select(&ww, `SELECT * FROM words;`); err != nil {
 		return []Word{}, fmt.Errorf("error getting words: %w", err)
 	}
 	return ww, nil
 }
 
-func (c *Controller) Create(w *Word) error {
-	if err := c.Get(w, `INSERT INTO words (word, puzzle_id, point_value, definition, part_of_speech, synonym) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+func (t *WordTable) Create(w *Word) error {
+	if err := t.Get(w, `INSERT INTO words (word, puzzle_id, point_value, definition, part_of_speech, synonym) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
 		w.Word,
 		w.PuzzleID,
 		w.PointValue,
@@ -49,8 +49,8 @@ func (c *Controller) Create(w *Word) error {
 	return nil
 }
 
-func (c *Controller) Update(w *Word) error {
-	if err := c.Get(w, `UPDATE words SET word = $1, puzzle_id = $2, point_value = $3, definition = $4, part_of_speech = $5, synonym = $6 RETURNING *;`,
+func (t *WordTable) Update(w *Word) error {
+	if err := t.Get(w, `UPDATE words SET word = $1, puzzle_id = $2, point_value = $3, definition = $4, part_of_speech = $5, synonym = $6 RETURNING *;`,
 		w.Word,
 		w.PuzzleID,
 		w.PointValue,
@@ -62,17 +62,17 @@ func (c *Controller) Update(w *Word) error {
 	return nil
 }
 
-func (c *Controller) Delete(id uint64) (Word, error) {
+func (t *WordTable) Delete(id uint64) (Word, error) {
 	var w Word
-	if err := c.Get(w, `DELETE FROM words WHERE id = $1 RETURNING *;`, id); err != nil {
+	if err := t.Get(w, `DELETE FROM words WHERE id = $1 RETURNING *;`, id); err != nil {
 		return Word{}, fmt.Errorf("error deleting word: %w", err)
 	}
 	return w, nil
 }
 
-func (c *Controller) DeleteAll() ([]Word, error) {
+func (t *WordTable) DeleteAll() ([]Word, error) {
 	var ww []Word
-	if err := c.Select(&ww, `DELETE FROM words RETURNING *;`); err != nil {
+	if err := t.Select(&ww, `DELETE FROM words RETURNING *;`); err != nil {
 		return []Word{}, fmt.Errorf("error deleting word: %w", err)
 	}
 	return ww, nil
