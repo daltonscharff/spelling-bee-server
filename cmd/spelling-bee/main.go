@@ -8,8 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 
+	"github.com/daltonscharff/spelling-bee-server/internal/controller"
 	"github.com/daltonscharff/spelling-bee-server/internal/database"
-	"github.com/daltonscharff/spelling-bee-server/internal/router"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	}
 
 	app := fiber.New()
-	router.DefineRoutes(app)
+	controller.DefineRoutes(app)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
