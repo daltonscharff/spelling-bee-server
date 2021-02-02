@@ -50,13 +50,14 @@ func (t *WordTable) Create(w *Word) error {
 }
 
 func (t *WordTable) Update(w *Word) error {
-	if err := t.Get(w, `UPDATE words SET word = $1, puzzle_id = $2, point_value = $3, definition = $4, part_of_speech = $5, synonym = $6 RETURNING *;`,
+	if err := t.Get(w, `UPDATE words SET word = $1, puzzle_id = $2, point_value = $3, definition = $4, part_of_speech = $5, synonym = $6 WHERE id = $7 RETURNING *;`,
 		w.Word,
 		w.PuzzleID,
 		w.PointValue,
 		w.Definition,
 		w.PartOfSpeech,
-		w.Synonym); err != nil {
+		w.Synonym,
+		w.ID); err != nil {
 		return fmt.Errorf("error updating word: %w", err)
 	}
 	return nil
@@ -64,7 +65,7 @@ func (t *WordTable) Update(w *Word) error {
 
 func (t *WordTable) Delete(id uint64) (Word, error) {
 	var w Word
-	if err := t.Get(w, `DELETE FROM words WHERE id = $1 RETURNING *;`, id); err != nil {
+	if err := t.Get(&w, `DELETE FROM words WHERE id = $1 RETURNING *;`, id); err != nil {
 		return Word{}, fmt.Errorf("error deleting word: %w", err)
 	}
 	return w, nil
