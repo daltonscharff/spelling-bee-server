@@ -8,11 +8,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Database struct {
-	Words *WordTable
-}
-
-var DB Database
+// var Puzzle *PuzzleTable
+// var Records *RecordTable
+// var Rooms *RoomTable
+var Words *WordTable
 
 // func createWordTable()
 
@@ -27,9 +26,7 @@ func Connect() error {
 		return fmt.Errorf("error connecting to database: %w", err)
 	}
 
-	DB = Database{
-		Words: &WordTable{DB: db},
-	}
+	Words = &WordTable{DB: db}
 
 	return nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func ViewAllWords(c *fiber.Ctx) error {
-	response, err := database.DB.Words.ReadAll()
+	response, err := database.Words.ReadAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
 	}
