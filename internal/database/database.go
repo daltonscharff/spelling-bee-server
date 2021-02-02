@@ -11,7 +11,7 @@ import (
 // var Puzzle *PuzzleTable
 // var Records *RecordTable
 // var Rooms *RoomTable
-var Words *WordTable
+var Words *WordsTable
 
 // func createWordTable()
 
@@ -26,7 +26,7 @@ func Connect() error {
 		return fmt.Errorf("error connecting to database: %w", err)
 	}
 
-	Words = &WordTable{DB: db}
+	Words = &WordsTable{DB: db}
 
 	return nil
 }
