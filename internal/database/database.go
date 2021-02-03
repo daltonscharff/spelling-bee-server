@@ -8,9 +8,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// var Puzzle *PuzzleTable
-// var Records *RecordTable
-// var Rooms *RoomTable
+var Puzzles *PuzzlesTable
+var Records *RecordsTable
+var Rooms *RoomsTable
 var Words *WordsTable
 
 // func createWordTable()
@@ -26,6 +26,9 @@ func Connect() error {
 		return fmt.Errorf("error connecting to database: %w", err)
 	}
 
+	Puzzles = &PuzzlesTable{DB: db}
+	Records = &RecordsTable{DB: db}
+	Rooms = &RoomsTable{DB: db}
 	Words = &WordsTable{DB: db}
 
 	return nil
