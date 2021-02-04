@@ -5,14 +5,15 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 type Puzzle struct {
-	ID           uint      `db:"id" json:"id"`
-	Date         time.Time `db:"date" json:"date"`
-	Letters      []string  `db:"letters" json:"letters"`
-	CenterLetter string    `db:"center_letter" json:"centerLetter"`
-	MaxScore     uint      `db:"max_score" json:"maxScore"`
+	ID           uint           `db:"id" json:"id"`
+	Date         time.Time      `db:"date" json:"date"`
+	Letters      pq.StringArray `db:"letters" json:"letters"`
+	CenterLetter string         `db:"center_letter" json:"centerLetter"`
+	MaxScore     uint           `db:"max_score" json:"maxScore"`
 }
 
 type PuzzlesTable struct {
