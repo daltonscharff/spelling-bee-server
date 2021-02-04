@@ -8,10 +8,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var Puzzles *PuzzlesTable
-var Records *RecordsTable
-var Rooms *RoomsTable
-var Words *WordsTable
+var Puzzles *puzzlesTable
+var Records *recordsTable
+var Rooms *roomsTable
+var Words *wordsTable
 
 func Connect() error {
 	connString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
@@ -24,15 +24,15 @@ func Connect() error {
 		return fmt.Errorf("error connecting to database: %w", err)
 	}
 
-	Puzzles = &PuzzlesTable{DB: db}
-	Records = &RecordsTable{DB: db}
-	Rooms = &RoomsTable{DB: db}
-	Words = &WordsTable{DB: db}
+	Puzzles = &puzzlesTable{DB: db}
+	Records = &recordsTable{DB: db}
+	Rooms = &roomsTable{DB: db}
+	Words = &wordsTable{DB: db}
 
-	Puzzles.initTable()
-	Rooms.initTable()
-	Words.initTable()
-	Records.initTable()
+	Puzzles.InitTable()
+	Rooms.InitTable()
+	Words.InitTable()
+	Records.InitTable()
 
 	return nil
 }

@@ -14,11 +14,11 @@ type Record struct {
 	FoundAt    uint `db:"found_at" json:"foundAt"`
 }
 
-type RecordsTable struct {
+type recordsTable struct {
 	*sqlx.DB
 }
 
-func (t RecordsTable) initTable() error {
+func (t recordsTable) InitTable() error {
 	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS records
 		(
 				id serial NOT NULL,
@@ -40,7 +40,7 @@ func (t RecordsTable) initTable() error {
 	return err
 }
 
-func (t *RecordsTable) Read(id uint64) (Record, error) {
+func (t *recordsTable) Read(id uint64) (Record, error) {
 	var r Record
 	if err := t.Get(&r, `SELECT * FROM finds WHERE id = $1;`, id); err != nil {
 		return Record{}, fmt.Errorf("error getting record: %w", err)
@@ -48,7 +48,7 @@ func (t *RecordsTable) Read(id uint64) (Record, error) {
 	return r, nil
 }
 
-func (t *RecordsTable) ReadAll() ([]Record, error) {
+func (t *recordsTable) ReadAll() ([]Record, error) {
 	var rr []Record
 	if err := t.Select(&rr, `SELECT * FROM finds;`); err != nil {
 		return []Record{}, fmt.Errorf("error getting records: %w", err)
@@ -56,7 +56,7 @@ func (t *RecordsTable) ReadAll() ([]Record, error) {
 	return rr, nil
 }
 
-func (t *RecordsTable) Create(r *Record) error {
+func (t *recordsTable) Create(r *Record) error {
 	if err := t.Get(r, `INSERT INTO finds (word_id, room_id, player_name, found_at) VALUES ($1, $2, $3, $4) RETURNING *`,
 		r.WordID,
 		r.RoomID,
@@ -67,7 +67,7 @@ func (t *RecordsTable) Create(r *Record) error {
 	return nil
 }
 
-func (t *RecordsTable) Update(r *Record) error {
+func (t *recordsTable) Update(r *Record) error {
 	if err := t.Get(r, `UPDATE finds SET word_id = $1, room_id = $2, player_name = $3, found_at = $4 RETURNING *;`,
 		r.WordID,
 		r.RoomID,
@@ -78,7 +78,7 @@ func (t *RecordsTable) Update(r *Record) error {
 	return nil
 }
 
-func (t *RecordsTable) Delete(id uint64) (Record, error) {
+func (t *recordsTable) Delete(id uint64) (Record, error) {
 	var r Record
 	if err := t.Get(r, `DELETE FROM finds WHERE id = $1 RETURNING *;`, id); err != nil {
 		return Record{}, fmt.Errorf("error deleting record: %w", err)

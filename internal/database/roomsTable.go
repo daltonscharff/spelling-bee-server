@@ -12,11 +12,11 @@ type Room struct {
 	Score uint   `db:"score" json:"score"`
 }
 
-type RoomsTable struct {
+type roomsTable struct {
 	*sqlx.DB
 }
 
-func (t RoomsTable) initTable() error {
+func (t roomsTable) InitTable() error {
 	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS rooms
 		(
 				id serial NOT NULL,
@@ -28,7 +28,7 @@ func (t RoomsTable) initTable() error {
 	return err
 }
 
-func (t *RoomsTable) Read(id uint64) (Room, error) {
+func (t *roomsTable) Read(id uint64) (Room, error) {
 	var r Room
 	if err := t.Get(&r, `SELECT * FROM rooms WHERE id = $1;`, id); err != nil {
 		return Room{}, fmt.Errorf("error getting room: %w", err)
@@ -36,7 +36,7 @@ func (t *RoomsTable) Read(id uint64) (Room, error) {
 	return r, nil
 }
 
-func (t *RoomsTable) ReadAll() ([]Room, error) {
+func (t *roomsTable) ReadAll() ([]Room, error) {
 	var rr []Room
 	if err := t.Select(&rr, `SELECT * FROM rooms;`); err != nil {
 		return []Room{}, fmt.Errorf("error getting rooms: %w", err)
@@ -44,7 +44,7 @@ func (t *RoomsTable) ReadAll() ([]Room, error) {
 	return rr, nil
 }
 
-func (t *RoomsTable) Create(r *Room) error {
+func (t *roomsTable) Create(r *Room) error {
 	if err := t.Get(r, `INSERT INTO rooms (code, score) VALUES ($1, $2) RETURNING *`,
 		r.Code,
 		r.Score); err != nil {
@@ -53,7 +53,7 @@ func (t *RoomsTable) Create(r *Room) error {
 	return nil
 }
 
-func (t *RoomsTable) Update(r *Room) error {
+func (t *roomsTable) Update(r *Room) error {
 	if err := t.Get(r, `UPDATE rooms SET code = $1, score = $2 RETURNING *;`,
 		r.Code,
 		r.Score); err != nil {
@@ -62,7 +62,7 @@ func (t *RoomsTable) Update(r *Room) error {
 	return nil
 }
 
-func (t *RoomsTable) Delete(id uint64) (Room, error) {
+func (t *roomsTable) Delete(id uint64) (Room, error) {
 	var r Room
 	if err := t.Get(r, `DELETE FROM rooms WHERE id = $1 RETURNING *;`, id); err != nil {
 		return Room{}, fmt.Errorf("error deleting room: %w", err)

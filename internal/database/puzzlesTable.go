@@ -16,11 +16,11 @@ type Puzzle struct {
 	MaxScore     uint           `db:"max_score" json:"maxScore"`
 }
 
-type PuzzlesTable struct {
+type puzzlesTable struct {
 	*sqlx.DB
 }
 
-func (t PuzzlesTable) initTable() error {
+func (t puzzlesTable) InitTable() error {
 	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS puzzles
 		(
 				id serial NOT NULL,
@@ -33,7 +33,7 @@ func (t PuzzlesTable) initTable() error {
 	return err
 }
 
-func (t *PuzzlesTable) Read(id uint64) (Puzzle, error) {
+func (t *puzzlesTable) Read(id uint64) (Puzzle, error) {
 	var p Puzzle
 	if err := t.Get(&p, `SELECT * FROM puzzles WHERE id = $1;`, id); err != nil {
 		return Puzzle{}, fmt.Errorf("error getting puzzle: %w", err)
@@ -41,7 +41,7 @@ func (t *PuzzlesTable) Read(id uint64) (Puzzle, error) {
 	return p, nil
 }
 
-func (t *PuzzlesTable) ReadAll() ([]Puzzle, error) {
+func (t *puzzlesTable) ReadAll() ([]Puzzle, error) {
 	var pp []Puzzle
 	if err := t.Select(&pp, `SELECT * FROM puzzles;`); err != nil {
 		return []Puzzle{}, fmt.Errorf("error getting puzzles: %w", err)
@@ -49,7 +49,7 @@ func (t *PuzzlesTable) ReadAll() ([]Puzzle, error) {
 	return pp, nil
 }
 
-func (t *PuzzlesTable) Create(p *Puzzle) error {
+func (t *puzzlesTable) Create(p *Puzzle) error {
 	if err := t.Get(p, `INSERT INTO puzzles (date, letters, center_letter, max_score) VALUES ($1, $2, $3, $4) RETURNING *`,
 		p.Date,
 		p.Letters,
@@ -60,7 +60,7 @@ func (t *PuzzlesTable) Create(p *Puzzle) error {
 	return nil
 }
 
-func (t *PuzzlesTable) Update(p *Puzzle) error {
+func (t *puzzlesTable) Update(p *Puzzle) error {
 	if err := t.Get(p, `UPDATE puzzles SET date = $1, letters = $2, center_letter = $3, max_score = $4 RETURNING *;`,
 		p.Date,
 		p.Letters,
@@ -71,7 +71,7 @@ func (t *PuzzlesTable) Update(p *Puzzle) error {
 	return nil
 }
 
-func (t *PuzzlesTable) Delete(id uint64) (Puzzle, error) {
+func (t *puzzlesTable) Delete(id uint64) (Puzzle, error) {
 	var p Puzzle
 	if err := t.Get(p, `DELETE FROM puzzles WHERE id = $1 RETURNING *;`, id); err != nil {
 		return Puzzle{}, fmt.Errorf("error deleting puzzle: %w", err)

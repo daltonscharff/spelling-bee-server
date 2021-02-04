@@ -9,7 +9,7 @@ import (
 	"github.com/daltonscharff/spelling-bee-server/internal/database"
 )
 
-func ViewAllWords(c *fiber.Ctx) error {
+func viewAllWords(c *fiber.Ctx) error {
 	response, err := database.Words.ReadAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
@@ -17,7 +17,7 @@ func ViewAllWords(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func ViewWord(c *fiber.Ctx) error {
+func viewWord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -29,7 +29,7 @@ func ViewWord(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func CreateWord(c *fiber.Ctx) error {
+func createWord(c *fiber.Ctx) error {
 	word := database.Word{}
 	if err := c.BodyParser(&word); err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -40,7 +40,7 @@ func CreateWord(c *fiber.Ctx) error {
 	return c.JSON(word)
 }
 
-func UpdateWord(c *fiber.Ctx) error {
+func updateWord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -56,7 +56,7 @@ func UpdateWord(c *fiber.Ctx) error {
 	return c.JSON(word)
 }
 
-func DeleteAllWords(c *fiber.Ctx) error {
+func deleteAllWords(c *fiber.Ctx) error {
 	response, err := database.Words.DeleteAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
@@ -64,7 +64,7 @@ func DeleteAllWords(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func DeleteWord(c *fiber.Ctx) error {
+func deleteWord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())

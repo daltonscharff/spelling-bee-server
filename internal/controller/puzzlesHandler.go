@@ -9,7 +9,7 @@ import (
 	"github.com/daltonscharff/spelling-bee-server/internal/database"
 )
 
-func ViewAllPuzzles(c *fiber.Ctx) error {
+func viewAllPuzzles(c *fiber.Ctx) error {
 	response, err := database.Puzzles.ReadAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
@@ -17,7 +17,7 @@ func ViewAllPuzzles(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func ViewPuzzle(c *fiber.Ctx) error {
+func viewPuzzle(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -29,7 +29,7 @@ func ViewPuzzle(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func CreatePuzzle(c *fiber.Ctx) error {
+func createPuzzle(c *fiber.Ctx) error {
 	puzzle := database.Puzzle{}
 	if err := c.BodyParser(&puzzle); err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -40,7 +40,7 @@ func CreatePuzzle(c *fiber.Ctx) error {
 	return c.JSON(puzzle)
 }
 
-func UpdatePuzzle(c *fiber.Ctx) error {
+func updatePuzzle(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -56,7 +56,7 @@ func UpdatePuzzle(c *fiber.Ctx) error {
 	return c.JSON(puzzle)
 }
 
-func DeletePuzzle(c *fiber.Ctx) error {
+func deletePuzzle(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())

@@ -9,7 +9,7 @@ import (
 	"github.com/daltonscharff/spelling-bee-server/internal/database"
 )
 
-func ViewAllRecords(c *fiber.Ctx) error {
+func viewAllRecords(c *fiber.Ctx) error {
 	response, err := database.Records.ReadAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
@@ -17,7 +17,7 @@ func ViewAllRecords(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func ViewRecord(c *fiber.Ctx) error {
+func viewRecord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -29,7 +29,7 @@ func ViewRecord(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func CreateRecord(c *fiber.Ctx) error {
+func createRecord(c *fiber.Ctx) error {
 	record := database.Record{}
 	if err := c.BodyParser(&record); err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -40,7 +40,7 @@ func CreateRecord(c *fiber.Ctx) error {
 	return c.JSON(record)
 }
 
-func UpdateRecord(c *fiber.Ctx) error {
+func updateRecord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -56,7 +56,7 @@ func UpdateRecord(c *fiber.Ctx) error {
 	return c.JSON(record)
 }
 
-func DeleteRecord(c *fiber.Ctx) error {
+func deleteRecord(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())

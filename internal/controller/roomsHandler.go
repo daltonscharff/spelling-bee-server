@@ -9,7 +9,7 @@ import (
 	"github.com/daltonscharff/spelling-bee-server/internal/database"
 )
 
-func ViewAllRooms(c *fiber.Ctx) error {
+func viewAllRooms(c *fiber.Ctx) error {
 	response, err := database.Rooms.ReadAll()
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(err.Error())
@@ -17,7 +17,7 @@ func ViewAllRooms(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func ViewRoom(c *fiber.Ctx) error {
+func viewRoom(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -29,7 +29,7 @@ func ViewRoom(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
-func CreateRoom(c *fiber.Ctx) error {
+func createRoom(c *fiber.Ctx) error {
 	room := database.Room{}
 	if err := c.BodyParser(&room); err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -40,7 +40,7 @@ func CreateRoom(c *fiber.Ctx) error {
 	return c.JSON(room)
 }
 
-func UpdateRoom(c *fiber.Ctx) error {
+func updateRoom(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
@@ -56,7 +56,7 @@ func UpdateRoom(c *fiber.Ctx) error {
 	return c.JSON(room)
 }
 
-func DeleteRoom(c *fiber.Ctx) error {
+func deleteRoom(c *fiber.Ctx) error {
 	id, err := strconv.ParseUint(c.Params("id"), 0, 64)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).SendString(err.Error())
