@@ -18,6 +18,28 @@ type RecordsTable struct {
 	*sqlx.DB
 }
 
+func (t RecordsTable) initTable() error {
+	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS records
+		(
+				id serial NOT NULL,
+				word_id integer NOT NULL,
+				room_id integer NOT NULL,
+				player_name character varying(64) NOT NULL,
+				found_at timestamp with time zone NOT NULL,
+				CONSTRAINT records_pkey PRIMARY KEY (id),
+				CONSTRAINT records_word_id_room_id_key UNIQUE (word_id, room_id),
+				CONSTRAINT records_room_id_fkey FOREIGN KEY (room_id)
+						REFERENCES rooms (id) MATCH SIMPLE
+						ON UPDATE NO ACTION
+						ON DELETE NO ACTION,
+				CONSTRAINT records_word_id_fkey FOREIGN KEY (word_id)
+						REFERENCES words (id) MATCH SIMPLE
+						ON UPDATE NO ACTION
+						ON DELETE NO ACTION
+		);`)
+	return err
+}
+
 func (t *RecordsTable) Read(id uint64) (Record, error) {
 	var r Record
 	if err := t.Get(&r, `SELECT * FROM finds WHERE id = $1;`, id); err != nil {

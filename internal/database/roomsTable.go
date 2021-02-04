@@ -16,6 +16,18 @@ type RoomsTable struct {
 	*sqlx.DB
 }
 
+func (t RoomsTable) initTable() error {
+	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS rooms
+		(
+				id serial NOT NULL,
+				code character(8) NOT NULL,
+				score integer NOT NULL,
+				CONSTRAINT rooms_pkey PRIMARY KEY (id),
+				CONSTRAINT rooms_code_key UNIQUE (code)
+		);`)
+	return err
+}
+
 func (t *RoomsTable) Read(id uint64) (Room, error) {
 	var r Room
 	if err := t.Get(&r, `SELECT * FROM rooms WHERE id = $1;`, id); err != nil {

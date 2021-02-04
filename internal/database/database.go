@@ -13,8 +13,6 @@ var Records *RecordsTable
 var Rooms *RoomsTable
 var Words *WordsTable
 
-// func createWordTable()
-
 func Connect() error {
 	connString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 
@@ -30,6 +28,11 @@ func Connect() error {
 	Records = &RecordsTable{DB: db}
 	Rooms = &RoomsTable{DB: db}
 	Words = &WordsTable{DB: db}
+
+	Puzzles.initTable()
+	Rooms.initTable()
+	Words.initTable()
+	Records.initTable()
 
 	return nil
 }

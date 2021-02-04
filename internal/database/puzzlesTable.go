@@ -20,6 +20,19 @@ type PuzzlesTable struct {
 	*sqlx.DB
 }
 
+func (t PuzzlesTable) initTable() error {
+	_, err := t.Exec(`CREATE TABLE IF NOT EXISTS puzzles
+		(
+				id serial NOT NULL,
+				date date NOT NULL,
+				letters character(1)[] NOT NULL,
+				center character(1) NOT NULL,
+				max_score integer NOT NULL,
+				CONSTRAINT puzzles_pkey PRIMARY KEY (id)
+		);`)
+	return err
+}
+
 func (t *PuzzlesTable) Read(id uint64) (Puzzle, error) {
 	var p Puzzle
 	if err := t.Get(&p, `SELECT * FROM puzzles WHERE id = $1;`, id); err != nil {

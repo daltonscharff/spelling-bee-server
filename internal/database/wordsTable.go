@@ -20,6 +20,26 @@ type WordsTable struct {
 	*sqlx.DB
 }
 
+func (t WordsTable) initTable() error {
+	_, err := t.Exec(`CREATE TABLE  IF NOT EXISTS words 
+		(
+				id serial NOT NULL,
+				word character varying(32) NOT NULL,
+				puzzle_id integer NOT NULL,
+				point_value smallint NOT NULL,
+				definition text NOT NULL,
+				part_of_speech character varying(32) NOT NULL,
+				synonym character varying(32) NOT NULL,
+				CONSTRAINT words_pkey PRIMARY KEY (id),
+				CONSTRAINT words_word_key UNIQUE (word),
+				CONSTRAINT words_puzzle_id_fkey FOREIGN KEY (puzzle_id)
+						REFERENCES puzzles (id) MATCH SIMPLE
+						ON UPDATE NO ACTION
+						ON DELETE NO ACTION
+		);`)
+	return err
+}
+
 func (t *WordsTable) Read(id uint64) (Word, error) {
 	var w Word
 	if err := t.Get(&w, `SELECT * FROM words WHERE id = $1;`, id); err != nil {
