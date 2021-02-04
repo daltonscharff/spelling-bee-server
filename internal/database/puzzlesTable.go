@@ -26,7 +26,7 @@ func (t puzzlesTable) InitTable() error {
 				id serial NOT NULL,
 				date date NOT NULL,
 				letters character(1)[] NOT NULL,
-				center character(1) NOT NULL,
+				center_letter character(1) NOT NULL,
 				max_score integer NOT NULL,
 				CONSTRAINT puzzles_pkey PRIMARY KEY (id)
 		);`)
