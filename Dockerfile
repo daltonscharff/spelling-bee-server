@@ -5,4 +5,4 @@ COPY go.* .
 RUN go mod download
 COPY . .
 
-CMD [ "go", "run", "/go/src/cmd/spelling-bee/main.go" ]
+CMD [ "go", "run", "/go/src/main.go" ]

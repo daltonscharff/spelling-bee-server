@@ -3,6 +3,7 @@
 - [x] create tables on database instantiation
   - [x] remove schema.sql
 - [x] make methods in database and controller package private
-- [ ] use logger instead of fmt
 - [ ] fix docker-compose issue (go project starts faster than postgres)
+- [ ] fix updater pkg
 - [ ] work on websocket connection
+- [ ] add logger messages
