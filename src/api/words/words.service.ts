@@ -53,32 +53,37 @@ export class WordsService {
     if (result.affected === 0) throw new NotFoundException();
   }
 
-  async autofill(createWordDto: CreateWordDto): Promise<{ id: string }> {
-    const dictionaryData = await this.lookupWord(createWordDto.word);
+  async autofill(word: string): Promise<{ id: string }> {
+    word = word.toLowerCase();
+    const dictionaryData = await this.lookupWord(word);
+    const isPanagram = this.isPanagram(word);
     return this.create({
-      ...createWordDto,
-      pointValue: createWordDto.pointValue ?? this.getPointValue(createWordDto.word),
-      definition: createWordDto.definition ?? dictionaryData.definition,
-      partOfSpeech: createWordDto.partOfSpeech ?? dictionaryData.partOfSpeech,
-      synonym: createWordDto.synonym ?? dictionaryData.synonym
+      word,
+      pointValue: this.getPointValue(word, isPanagram),
+      definition: dictionaryData.definition,
+      partOfSpeech: dictionaryData.partOfSpeech,
+      synonym: dictionaryData.synonym,
+      isPanagram
     });
   }
 
-  private getPointValue(word: string): number {
+  private isPanagram(word: string): boolean {
     const letterMap = new Map<string, boolean>();
     for (let char of word) {
       letterMap.set(char, true);
     }
-    const wordLength = word.length;
-    const uniqueLetterLength = [...letterMap.keys()].length;
+    return [...letterMap.keys()].length >= 7;
+  }
 
+  private getPointValue(word: string, isPanagram: boolean): number {
+    const wordLength = word.length;
     let score = 0;
     if (wordLength === 4) {
       score = 1;
     } else {
       score = wordLength;
     }
-    if (uniqueLetterLength >= 7) score += 7;
+    if (isPanagram) score += 7;
     return score;
   }
 

@@ -18,6 +18,9 @@ export class Word {
     @Column({ length: 32, nullable: true })
     partOfSpeech: string;
 
-    @Column({ length: 64, nullable: true})
+    @Column({ length: 64, nullable: true })
     synonym: string;
+
+    @Column({ type: Boolean, nullable: true })
+    isPanagram: boolean;
 }

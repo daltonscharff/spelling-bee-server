@@ -12,9 +12,9 @@ export class WordsController {
     return this.wordsService.create(createWordDto);
   }
 
-  @Post('autofill')
-  autofill(@Body() createWordDto: CreateWordDto) {
-    return this.wordsService.autofill(createWordDto);
+  @Post(':word')
+  autofill(@Param('word') word: string) {
+    return this.wordsService.autofill(word);
   }
 
   @Get()

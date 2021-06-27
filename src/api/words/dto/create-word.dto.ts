@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsPositive, IsOptional, IsAlpha } from 'class-validator';
+import { IsString, IsInt, IsPositive, IsOptional, IsAlpha, IsBoolean } from 'class-validator';
 
 export class CreateWordDto {
     @IsString()
@@ -8,17 +8,21 @@ export class CreateWordDto {
     @IsInt()
     @IsPositive()
     @IsOptional()
-    pointValue: number;
+    pointValue?: number;
 
     @IsString()
     @IsOptional()
-    definition: string;
+    definition?: string;
 
     @IsString()
     @IsOptional()
-    partOfSpeech: string;
+    partOfSpeech?: string;
 
     @IsString()
     @IsOptional()
-    synonym: string;
+    synonym?: string;
+
+    @IsBoolean()
+    @IsOptional()
+    isPanagram?: boolean;
 }
