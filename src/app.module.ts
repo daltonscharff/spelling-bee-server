@@ -5,17 +5,21 @@ import { WordsModule } from './api/words/words.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { Word } from './api/words/entities/word.entity';
+import rapidapiConfig from './config/rapidapi.config';
 
 @Module({
   controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig]
+      load: [
+        databaseConfig, 
+        rapidapiConfig
+      ]
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
-        type: 'postgres', 
+        type: 'postgres',
         host: config.get('database.host'),
         port: +config.get<number>('database.port'),
         username: config.get('database.username'),
@@ -31,4 +35,4 @@ import { Word } from './api/words/entities/word.entity';
     WordsModule
   ],
 })
-export class AppModule {}
+export class AppModule { }
