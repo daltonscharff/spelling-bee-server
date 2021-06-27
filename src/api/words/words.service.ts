@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpService, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -9,7 +9,8 @@ import { Word } from './entities/word.entity';
 export class WordsService {
   constructor(
     @InjectRepository(Word)
-    private wordsRepository: Repository<Word>
+    private wordsRepository: Repository<Word>,
+    private httpService: HttpService
   ) { }
 
   async create(createWordDto: CreateWordDto): Promise<{ id: string }> {
@@ -68,7 +69,11 @@ export class WordsService {
     const uniqueLetterLength = [...letterMap.keys()].length;
 
     let score = 0;
-    if (wordLength >= 4) score = wordLength - 3;
+    if (wordLength === 4) {
+      score = 1;
+    } else {
+      score = wordLength;
+    }
     if (uniqueLetterLength >= 7) score += 7;
     return score;
   }
@@ -78,6 +83,7 @@ export class WordsService {
     partOfSpeech: string,
     synonym: string
   }> {
+    // this.httpService.get()
     return {
       definition: "",
       partOfSpeech: "",
