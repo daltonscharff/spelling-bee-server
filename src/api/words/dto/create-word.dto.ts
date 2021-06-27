@@ -1,7 +1,8 @@
-import { IsString, IsInt, IsPositive, IsOptional } from 'class-validator';
+import { IsString, IsInt, IsPositive, IsOptional, IsAlpha } from 'class-validator';
 
 export class CreateWordDto {
     @IsString()
+    @IsAlpha()
     word: string;
 
     @IsInt()
