@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -12,23 +12,35 @@ export class WordsService {
     private wordsRepository: Repository<Word>
   ) {}
 
-  create(createWordDto: CreateWordDto) {
-    return this.wordsRepository.insert(createWordDto);
+  async create(createWordDto: CreateWordDto): Promise<{id: String}> {
+    const result = await this.wordsRepository.insert(createWordDto);
+    return {
+      id: result.identifiers[0]["id"]
+    };
   }
 
   findAll(): Promise<Word[]> {
     return this.wordsRepository.find();
   }
 
-  findOne(id: string) {
-    return this.wordsRepository.findOne(id);
+  async findOne(id: string): Promise<Word> {
+    const word = await this.wordsRepository.findOne(id);
+    if (!word) throw new NotFoundException();
+    return word;
   }
 
-  update(id: string, updateWordDto: UpdateWordDto) {
-    return this.wordsRepository.update(id, updateWordDto);
+  async update(id: string, updateWordDto: UpdateWordDto): Promise<void> {
+    const result = await this.wordsRepository.update(id, updateWordDto);
+    if (result.affected === 0) throw new NotFoundException();
   }
 
-  removeOne(id: string) {
-    return this.wordsRepository.delete(id);
+  async removeOne(id: string): Promise<void> {
+    const result = await this.wordsRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException();
+  }
+
+  async defineWord(id: string): Promise<void> {
+    const word = this.findOne(id);
+    
   }
 }
