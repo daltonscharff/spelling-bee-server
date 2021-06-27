@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -13,10 +13,19 @@ export class WordsService {
   ) { }
 
   async create(createWordDto: CreateWordDto): Promise<{ id: string }> {
-    const result = await this.wordsRepository.insert(createWordDto);
-    return {
-      id: result.identifiers[0]["id"]
-    };
+    try {
+      const result = await this.wordsRepository.insert(createWordDto);
+      return {
+        id: result.identifiers[0]["id"]
+      };
+    } catch (err) {
+      switch (err.code) {
+        case "23505": 
+          throw new ConflictException(err.detail);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
   findAll(): Promise<Word[]> {
@@ -51,7 +60,17 @@ export class WordsService {
   }
 
   private getPointValue(word: string): number {
-    return 0;
+    const letterMap = new Map<string, boolean>();
+    for (let char of word) {
+      letterMap.set(char, true);
+    }
+    const wordLength = word.length;
+    const uniqueLetterLength = [...letterMap.keys()].length;
+
+    let score = 0;
+    if (wordLength >= 4) score = wordLength - 3;
+    if (uniqueLetterLength >= 7) score += 7;
+    return score;
   }
 
   private async lookupWord(word: string): Promise<{
