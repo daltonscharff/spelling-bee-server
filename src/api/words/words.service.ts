@@ -10,9 +10,9 @@ export class WordsService {
   constructor(
     @InjectRepository(Word)
     private wordsRepository: Repository<Word>
-  ) {}
+  ) { }
 
-  async create(createWordDto: CreateWordDto): Promise<{id: String}> {
+  async create(createWordDto: CreateWordDto): Promise<{ id: string }> {
     const result = await this.wordsRepository.insert(createWordDto);
     return {
       id: result.identifiers[0]["id"]
@@ -39,8 +39,30 @@ export class WordsService {
     if (result.affected === 0) throw new NotFoundException();
   }
 
-  async defineWord(id: string): Promise<void> {
-    const word = this.findOne(id);
-    
+  async autofill(createWordDto: CreateWordDto): Promise<{ id: string }> {
+    const dictionaryData = await this.lookupWord(createWordDto.word);
+    return this.create({
+      ...createWordDto,
+      pointValue: createWordDto.pointValue ?? this.getPointValue(createWordDto.word),
+      definition: createWordDto.definition ?? dictionaryData.definition,
+      partOfSpeech: createWordDto.partOfSpeech ?? dictionaryData.partOfSpeech,
+      synonym: createWordDto.synonym ?? dictionaryData.synonym
+    });
+  }
+
+  private getPointValue(word: string): number {
+    return 0;
+  }
+
+  private async lookupWord(word: string): Promise<{
+    definition: string,
+    partOfSpeech: string,
+    synonym: string
+  }> {
+    return {
+      definition: "",
+      partOfSpeech: "",
+      synonym: ""
+    };
   }
 }

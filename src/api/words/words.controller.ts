@@ -5,11 +5,16 @@ import { UpdateWordDto } from './dto/update-word.dto';
 
 @Controller('api/words')
 export class WordsController {
-  constructor(private readonly wordsService: WordsService) {}
+  constructor(private readonly wordsService: WordsService) { }
 
   @Post()
-  async create(@Body() createWordDto: CreateWordDto) {
+  create(@Body() createWordDto: CreateWordDto) {
     return this.wordsService.create(createWordDto);
+  }
+
+  @Post('autofill')
+  autofill(@Body() createWordDto: CreateWordDto) {
+    return this.wordsService.autofill(createWordDto);
   }
 
   @Get()
@@ -25,11 +30,6 @@ export class WordsController {
   @Patch(':id')
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateWordDto: UpdateWordDto) {
     return this.wordsService.update(id, updateWordDto);
-  }
-
-  @Patch(':id/define')
-  defineWord(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.wordsService.defineWord(id);
   }
 
   @Delete(':id')
