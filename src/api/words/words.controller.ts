@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, ParseUUIDPipe } from '@nestjs/common';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
@@ -8,8 +8,9 @@ export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
   @Post()
-  create(@Body() createWordDto: CreateWordDto) {
-    return this.wordsService.create(createWordDto);
+  async create(@Body() createWordDto: CreateWordDto) {
+    const result = await this.wordsService.create(createWordDto);
+    return this.findOne(result.identifiers[0]["id"]);
   }
 
   @Get()
@@ -18,17 +19,29 @@ export class WordsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wordsService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const result = await this.wordsService.findOne(id);
+    
+    if (!result) {
+      throw new NotFoundException();
+    }
+    return result;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWordDto: UpdateWordDto) {
-    return this.wordsService.update(id, updateWordDto);
+  async update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateWordDto: UpdateWordDto) {
+    const result = await this.wordsService.update(id, updateWordDto);
+
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wordsService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    const result = await this.wordsService.removeOne(id);
+    if (result.affected === 0) {
+      throw new NotFoundException();
+    }
   }
 }

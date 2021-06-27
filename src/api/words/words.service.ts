@@ -13,11 +13,7 @@ export class WordsService {
   ) {}
 
   create(createWordDto: CreateWordDto) {
-    // return 'This action adds a new word';
-    this.wordsRepository.insert({
-      word: "Test",
-      pointValue: 1
-    })
+    return this.wordsRepository.insert(createWordDto);
   }
 
   findAll(): Promise<Word[]> {
@@ -25,14 +21,14 @@ export class WordsService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} word`;
+    return this.wordsRepository.findOne(id);
   }
 
   update(id: string, updateWordDto: UpdateWordDto) {
-    return `This action updates a #${id} word`;
+    return this.wordsRepository.update(id, updateWordDto);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} word`;
+  removeOne(id: string) {
+    return this.wordsRepository.delete(id);
   }
 }
