@@ -9,6 +9,7 @@ import { PuzzlesModule } from './api/puzzles/puzzles.module';
 import { RecordsModule } from './api/records/records.module';
 import { RoomsModule } from './api/rooms/rooms.module';
 import rapidapiConfig from './config/rapidapi.config';
+import { Room } from './api/rooms/entities/room.entity';
 
 @Module({
   controllers: [AppController],
@@ -29,7 +30,8 @@ import rapidapiConfig from './config/rapidapi.config';
         password: config.get('database.password'),
         database: config.get('database.database'),
         entities: [
-          Word
+          Word,
+          Room
         ],
         synchronize: true
       }),

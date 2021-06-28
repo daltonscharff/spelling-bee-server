@@ -48,7 +48,7 @@ export class WordsService {
     if (result.affected === 0) throw new NotFoundException();
   }
 
-  async removeOne(id: string): Promise<void> {
+  async remove(id: string): Promise<void> {
     const result = await this.wordsRepository.delete(id);
     if (result.affected === 0) throw new NotFoundException();
   }

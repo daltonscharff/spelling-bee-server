@@ -34,6 +34,6 @@ export class WordsController {
 
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.wordsService.removeOne(id);
+    return this.wordsService.remove(id);
   }
 }

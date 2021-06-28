@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { Room } from './entities/room.entity';
 
 @Injectable()
 export class RoomsService {
-  create(createRoomDto: CreateRoomDto) {
-    return 'This action adds a new room';
+  private readonly logger = new Logger(RoomsService.name);
+
+  constructor(
+    @InjectRepository(Room)
+    private roomsRepository: Repository<Room>
+  ) { }
+
+  async create(createRoomDto: CreateRoomDto): Promise<{ id: string }> {
+    try {
+      const result = await this.roomsRepository.insert(createRoomDto);
+      return {
+        id: result.identifiers[0]["id"]
+      };
+    } catch (err) {
+      switch (err.code) {
+        case "23505":
+          throw new ConflictException(err.detail);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all rooms`;
+  findAll(): Promise<Room[]> {
+    return this.roomsRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
+  async findOne(id: string): Promise<Room> {
+    const room = await this.roomsRepository.findOne(id);
+    if (!room) throw new NotFoundException();
+    return room;
   }
 
-  update(id: number, updateRoomDto: UpdateRoomDto) {
-    return `This action updates a #${id} room`;
+  async update(id: string, updateRoomDto: UpdateRoomDto): Promise<void> {
+    const result = await this.roomsRepository.update(id, updateRoomDto);
+    if (result.affected === 0) throw new NotFoundException();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} room`;
+  async remove(id: string): Promise<void> {
+    const result = await this.roomsRepository.delete(id);
+    if (result.affected === 0) throw new NotFoundException();
   }
 }
