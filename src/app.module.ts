@@ -5,6 +5,9 @@ import { WordsModule } from './api/words/words.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { Word } from './api/words/entities/word.entity';
+import { PuzzlesModule } from './api/puzzles/puzzles.module';
+import { RecordsModule } from './api/records/records.module';
+import { RoomsModule } from './api/rooms/rooms.module';
 import rapidapiConfig from './config/rapidapi.config';
 
 @Module({
@@ -32,7 +35,10 @@ import rapidapiConfig from './config/rapidapi.config';
       }),
       inject: [ConfigService],
     }),
-    WordsModule
+    WordsModule,
+    PuzzlesModule,
+    RecordsModule,
+    RoomsModule
   ],
 })
 export class AppModule { }
